@@ -5,7 +5,7 @@ Bilinear model.
 
 import numpy as np
 #import cupy as cp
-from src.mesh_obj import mesh_obj
+import src.mesh_obj as meshobj
 import timeit
 
 class facescape_bm(object):

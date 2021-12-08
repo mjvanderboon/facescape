@@ -156,7 +156,7 @@ for i in range(frame_count):
     # Render image
     Rt = np.array([[1, 0, 0, 0],
                    [0, -1, 0, 0],
-                   [0, 0, -1, 1000]], dtype=np.float64)
+                   [0, 0, -1, 1]], dtype=np.float64)
 
     tm = trimesh.Trimesh(vertices=mesh_full.vertices,
                               faces=mesh_full.faces_v - 1,

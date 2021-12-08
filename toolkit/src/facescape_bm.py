@@ -81,6 +81,27 @@ class facescape_bm(object):
         #             faces_v=self.fv_indices,
         #             faces_vt=self.ft_indices)
         return verts
+
+    def gen_verts(self, id_vec, exp_vec):
+        verts = self.shape_bm_core.dot(id_vec).dot(exp_vec).reshape((-1, 3))
+
+        # faces = []
+        # faces_vn = [] #normals?
+        # material = None
+        # faces_v = self.fv_indices
+        # faces_vt = self.ft_indices
+        # face_num = max(len(faces_v), len(faces_vn), len(faces_vt))
+        # if face_num > 0:
+        #     if len(faces_v) != face_num:
+        #         faces_v = [[-1, -1, -1]] * face_num
+        #     if len(faces_vn) != face_num:
+        #         faces_vn = [[-1, -1, -1]] * face_num
+        #     if len(faces_vt) != face_num:
+        #         faces_vt = [[-1, -1, -1]] * face_num
+        #     for i in range(face_num):
+        #         faces.append((faces_v[i], faces_vn[i], faces_vt[i], material))
+
+        return verts
         
     # generate full mesh
     def gen_full(self, id_vec, exp_vec):

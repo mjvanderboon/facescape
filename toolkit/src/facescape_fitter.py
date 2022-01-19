@@ -175,6 +175,9 @@ class facescape_fitter(facescape_bm):
         for face in mesh.faces:
             face_vertices, face_normals, tc, material = face
 
+            if any(verts_img[face_vertices - 1][:, 2] < 0):
+                continue
+
             if max(abs(model.texcoords[tc[0] - 1][0] - model.texcoords[tc[1] - 1][0]),
                     abs(model.texcoords[tc[0] - 1][0] - model.texcoords[tc[2] - 1][0]),
                     abs(model.texcoords[tc[1] - 1][0] - model.texcoords[tc[2] - 1][0]),
@@ -211,19 +214,23 @@ class facescape_fitter(facescape_bm):
             mask = np.zeros((r2[2], r2[3], 3), dtype=np.float32)
             cv2.fillConvexPoly(mask, np.int32(tri2Cropped), (1.0, 1.0, 1.0), 16, 0)
 
-            # Apply the Affine Transform just found to the src image
-            img2Cropped = cv2.warpAffine(img1Cropped, warpMat, (r2[3], r2[2]), None, flags=cv2.INTER_LINEAR,
-                                            borderMode=cv2.BORDER_REFLECT_101)
+            try:
+                # Apply the Affine Transform just found to the src image
+                img2Cropped = cv2.warpAffine(img1Cropped, warpMat, (r2[3], r2[2]), None, flags=cv2.INTER_LINEAR,
+                                                borderMode=cv2.BORDER_REFLECT_101)
 
-            # Apply mask to cropped region
-            img2Cropped = img2Cropped * mask
+                # Apply mask to cropped region
+                img2Cropped = img2Cropped * mask
 
-            # Copy triangular region of the rectangular patch to the output image
-            texture[r2[0]:r2[0] + r2[2], r2[1]:r2[1] + r2[3]] = texture[r2[0]:r2[0] + r2[2],
-                                                                r2[1]:r2[1] + r2[3]] * ((1.0, 1.0, 1.0) - mask)
+                # Copy triangular region of the rectangular patch to the output image
+                texture[r2[0]:r2[0] + r2[2], r2[1]:r2[1] + r2[3]] = texture[r2[0]:r2[0] + r2[2],
+                                                                    r2[1]:r2[1] + r2[3]] * ((1.0, 1.0, 1.0) - mask)
 
-            texture[r2[0]:r2[0] + r2[2], r2[1]:r2[1] + r2[3]] = texture[r2[0]:r2[0] + r2[2],
-                                                                r2[1]:r2[1] + r2[3]] + img2Cropped
+                texture[r2[0]:r2[0] + r2[2], r2[1]:r2[1] + r2[3]] = texture[r2[0]:r2[0] + r2[2],
+                                                                    r2[1]:r2[1] + r2[3]] + img2Cropped
+            except:
+                print('failed texture stuff')
+                pass
 
         return texture
 
